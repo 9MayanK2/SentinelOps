@@ -1,0 +1,23 @@
+# Local object stores / Local state history
+*.tfstate
+*.tfstate.*
+
+# Crash logs
+*.crash.log
+
+# Dependency directories (Contains downloaded providers and modules)
+.terraform/
+
+# Configuration variables (Often contain sensitive passwords/secrets)
+*.tfvars
+*.tfvars.json
+
+# Override files (Local adjustments)
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# CLI configuration file
+.terraformrc
+terraform.rc

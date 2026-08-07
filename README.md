@@ -567,7 +567,7 @@ DevSecOps/
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/9MayanK2/DevSecOps.git
+git clone https://github.com/9MayanK2/SentinelOps.git
 cd DevSecOps
 
 # 2. Install pre-commit hooks
@@ -660,8 +660,8 @@ policy:
 | `DB_PATH` | SQLite database path | `compliance/db/security_framework.db` |
 | `SOFT_FAIL` | Enable soft-fail mode for gate | `false` |
 | `ENFORCE_GATE` | Enforce security gate | `true` |
-| `AWS_REGION` | AWS region | `us-east-1` |
-| `AWS_ACCOUNT_ID` | AWS account ID | `284064534086` |
+| `AWS_REGION` | AWS region | `us-xxxxx` |
+| `AWS_ACCOUNT_ID` | AWS account ID | `2xxxxxxxx` |
 | `EKS_CLUSTER` | EKS cluster name | `sentinelops-dev-eks` |
 
 ---
@@ -807,20 +807,20 @@ Every commit is automatically screened before it enters the repository:
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                                                                             │
-│  BUILT BY A 3-PERSON TEAM FOR PGCP-ITISS PROGRAM                           │
-│  CDAC ACTS, Pune | February 2026                                           │
+│  BUILT BY A 4-PERSON TEAM FOR PGCP-ITISS PROGRAM                           │
+│  Sunbeam CDAC ACTS, Pune | February 2026                                   │
 │                                                                             │
 │  ┌─────────────────────┐  ┌─────────────────────┐  ┌─────────────────────┐ │
 │  │  DevSecOps Lead     │  │  Security Engineer  │  │  Cloud & Monitoring │ │
 │  │                     │  │                     │  │                     │ │
 │  │  • Jenkins CI/CD    │  │  • Gitleaks/Semgrep │  │  • AWS EKS/IaC      │ │
-│  │  • Docker Hardening │  │  • OWASP ZAP        │  │  • Prometheus/Grafana│ │
-│  │  • Trivy/Hadolint   │  │  • Python Scoring   │  │  • ELK Stack        │ │
-│  │  • K8s/Helm/ArgoCD  │  │  • Wazuh/Snort      │  │  • Flask Dashboard  │ │
+│  │  • Docker Hardening │  │  • Hadolint         │  │  • Prometheus/Grafana│ │
+│  │  • Trivy/Hadolint   │  │  • OWASP ZAP        │  │  • ELK Stack        │ │
+│  │  • K8s/Helm/ArgoCD  │  │  • Python Scoring   |  │  • Grafana Dashboard  │ │
 │  │  • Cosign Signing   │  │  • PKI/TLS Certs    │  │  • MySQL/Reports    │ │
 │  └─────────────────────┘  └─────────────────────┘  └─────────────────────┘ │
 │                                                                             │
-│  SHARED: Linux admin, Python scripting, Git workflow, weekly reviews       │
+│                                                                             │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -829,7 +829,7 @@ Every commit is automatically screened before it enters the repository:
 
 ## 📚 Acknowledgments
 
-- **CDAC ACTS, Pune** — Comprehensive DevSecOps curriculum and guidance
+- **Sunbeam, Pune** — Comprehensive DevSecOps curriculum and guidance
 - **Trivy** by Aqua Security — Container vulnerability scanner
 - **OWASP ZAP** by OWASP — Dynamic application security testing
 - **Cosign** by Sigstore — Container image signing and verification
@@ -844,6 +844,6 @@ Every commit is automatically screened before it enters the repository:
 
 **Built with ❤️ for the future of secure software delivery.**
 
-[⭐ Star this repo](https://github.com/9MayanK2/DevSecOps) • [🐛 Report Issues](https://github.com/9MayanK2/DevSecOps/issues) • [📝 Read Docs](./docs)
+[⭐ Star this repo](https://github.com/9MayanK2/SentinelOps) • [🐛 Report Issues](https://github.com/9MayanK2/SentinelOps/issues) • [📝 Read Docs](./docs)
 
 </div>

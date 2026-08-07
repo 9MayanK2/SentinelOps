@@ -1,0 +1,45 @@
+repos:
+  # Secret Scanning
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.18.1
+    hooks:
+      - id: gitleaks
+
+  # File Hygiene
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: ["--maxkb=2048"]
+
+  # Frontend ESLint
+  - repo: local
+    hooks:
+      - id: frontend-eslint
+        name: Frontend ESLint
+        entry: bash -c 'cd app/client && npx eslint src'
+        language: system
+        pass_filenames: false
+
+  # Backend ESLint
+  - repo: local
+    hooks:
+      - id: backend-eslint
+        name: Backend ESLint
+        entry: bash -c 'cd app/server && npx eslint .'
+        language: system
+        pass_filenames: false
+
+  # SAST - Semgrep
+  - repo: local
+    hooks:
+      - id: semgrep
+        name: Semgrep SAST
+        entry: semgrep --config=auto app/
+        language: system
+        pass_filenames: false

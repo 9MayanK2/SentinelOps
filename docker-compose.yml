@@ -1,0 +1,43 @@
+services:
+
+  backend:
+    build:
+      context: ./app/server
+      dockerfile: Dockerfile
+
+    image: sentinelops-backend:latest
+
+    ports:
+      - "5000:5000"
+
+    env_file:
+      - ./app/server/.env
+
+    restart: unless-stopped
+
+    networks:
+      - devsecops-network
+
+  frontend:
+    build:
+      context: ./app/client
+      dockerfile: Dockerfile
+
+    image: sentinelops-frontend:latest
+
+    ports:
+      - "3000:8080"
+
+    restart: unless-stopped
+
+    depends_on:
+      backend:
+        condition: service_healthy
+
+    networks:
+      - devsecops-network
+
+networks:
+
+  devsecops-network:
+    driver: bridge

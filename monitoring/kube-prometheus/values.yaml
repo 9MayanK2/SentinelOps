@@ -1,0 +1,53 @@
+grafana:
+  enabled: true
+
+  adminUser: admin
+  adminPassword: admin123
+
+  service:
+    type: ClusterIP
+
+  grafana.ini:
+
+    server:
+
+      root_url: "%(protocol)s://%(domain)s/grafana/"
+
+      serve_from_sub_path: true
+
+  persistence:
+
+    enabled: true
+
+    type: sts
+
+    storageClassName: gp3
+
+    accessModes:
+      - ReadWriteOnce
+
+    size: 10Gi
+
+prometheus:
+  prometheusSpec:
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: gp3
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 20Gi
+
+alertmanager:
+  alertmanagerSpec:
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: gp3
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 5Gi

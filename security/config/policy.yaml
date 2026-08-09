@@ -1,0 +1,25 @@
+# DevSecOps Enterprise Security Policy Configuration
+
+policy:
+  fail_on_critical: true
+  fail_on_high: false
+  minimum_score: 70.0
+  max_allowed_risk_score: 50
+
+enabled_tools:
+  - gitleaks
+  - trivy
+  - hadolint
+  - zap
+
+risk_weights:
+  critical: 10
+  high: 5
+  medium: 2
+  low: 1
+  info: 0
+
+compliance_frameworks:
+  - owasp_top_10_2021
+  - cis_benchmarks
+  - nist_sp_800_53

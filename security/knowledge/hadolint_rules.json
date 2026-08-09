@@ -1,0 +1,460 @@
+{
+  "DL3000": {
+    "title": "Use absolute WORKDIR",
+    "recommendation": "Always use an absolute path for WORKDIR instead of a relative path.",
+    "description": "Relative paths may resolve unexpectedly, causing builds to behave differently.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3000"]
+  },
+
+  "DL3001": {
+    "title": "For some bash commands the pipefail option is required",
+    "recommendation": "Use 'set -o pipefail' before executing commands connected with pipes.",
+    "description": "Pipeline failures may be hidden, allowing Docker images to build successfully despite errors.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3001"]
+  },
+
+  "DL3002": {
+    "title": "Last USER should not be root",
+    "recommendation": "Switch to a non-root user before the final image is built.",
+    "description": "Running containers as root increases the description of a container compromise.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3002"]
+  },
+
+  "DL3003": {
+    "title": "Use WORKDIR instead of cd",
+    "recommendation": "Replace shell 'cd' commands with the WORKDIR instruction.",
+    "description": "Using WORKDIR improves readability and avoids directory state issues between Dockerfile layers.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3003"]
+  },
+
+  "DL3004": {
+    "title": "Do not use sudo",
+    "recommendation": "Remove sudo from Dockerfile commands because Docker build steps already run with sufficient privileges.",
+    "description": "Using sudo adds unnecessary complexity and may not work in minimal base images.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3004"]
+  },
+
+  "DL3005": {
+    "title": "Avoid apt-get upgrade",
+    "recommendation": "Install only required packages instead of performing a full system upgrade.",
+    "description": "Upgrading all packages reduces reproducibility and may introduce unexpected changes.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3005"]
+  },
+
+  "DL3006": {
+    "title": "Always tag the image explicitly",
+    "recommendation": "Specify an explicit image tag instead of relying on the latest tag.",
+    "description": "Using implicit tags makes builds non-reproducible.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3006"]
+  },
+
+  "DL3007": {
+    "title": "Using latest is prone to errors",
+    "recommendation": "Replace the 'latest' tag with a fixed version.",
+    "description": "Images using latest may change unexpectedly between builds.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3007"]
+  },
+
+  "DL3008": {
+    "title": "Pin versions in apt-get install",
+    "recommendation": "Specify package versions when installing packages using apt-get.",
+    "description": "Version pinning improves reproducibility and supply-chain security.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3008"]
+  },
+
+  "DL3009": {
+    "title": "Delete apt lists after install",
+    "recommendation": "Remove /var/lib/apt/lists after package installation.",
+    "description": "Cleaning package lists reduces image size.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3009"]
+  },
+
+  "DL3010": {
+    "title": "Use ADD only for archive extraction",
+    "recommendation": "Prefer COPY unless automatic archive extraction is required.",
+    "description": "COPY has more predictable behavior than ADD.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3010"]
+  },
+
+  "DL3011": {
+    "title": "Valid UNIX ports",
+    "recommendation": "Expose only valid port numbers.",
+    "description": "Invalid ports may cause deployment failures.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3011"]
+  },
+
+  "DL3012": {
+    "title": "Multiple HEALTHCHECK instructions",
+    "recommendation": "Use only one HEALTHCHECK instruction in a Dockerfile.",
+    "description": "Only the last HEALTHCHECK is effective.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3012"]
+  },
+
+  "DL3013": {
+    "title": "Pin pip versions",
+    "recommendation": "Specify exact package versions in pip install commands.",
+    "description": "Version pinning prevents unexpected dependency changes.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3013"]
+  },
+
+  "DL3014": {
+    "title": "Use -y with zypper",
+    "recommendation": "Use the non-interactive '-y' option for zypper.",
+    "description": "Interactive commands can cause automated builds to hang.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3014"]
+  },
+
+  "DL3015": {
+    "title": "Avoid additional packages with apk",
+    "recommendation": "Use --no-cache with apk add.",
+    "description": "Avoids unnecessary package cache files and reduces image size.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3015"]
+  },
+
+  "DL3016": {
+    "title": "Pin npm package versions",
+    "recommendation": "Specify exact versions when installing npm packages globally.",
+    "description": "Improves reproducibility and dependency security.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3016"]
+  },
+
+  "DL3017": {
+    "title": "Avoid apk cache",
+    "recommendation": "Use apk add --no-cache.",
+    "description": "Prevents unnecessary cache files from being stored in the image.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3017"]
+  },
+
+  "DL3018": {
+    "title": "Pin apk package versions",
+    "recommendation": "Specify exact versions when installing Alpine packages.",
+    "description": "Ensures deterministic builds.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3018"]
+  },
+
+  "DL3019": {
+    "title": "Use --no-cache with apk",
+    "recommendation": "Always include --no-cache when using apk add.",
+    "description": "Reduces image size and avoids stale package indexes.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3019"]
+  },
+  "DL3020": {
+    "title": "Use COPY instead of ADD for files",
+    "recommendation": "Use COPY when you only need to copy local files. Reserve ADD for archive extraction or remote URLs.",
+    "description": "COPY provides more predictable behavior and reduces unintended side effects.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3020"]
+  },
+
+  "DL3021": {
+    "title": "COPY destination must end with slash",
+    "recommendation": "When copying multiple files, ensure the destination is a directory ending with '/'.",
+    "description": "Prevents ambiguous copy behavior and build failures.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3021"]
+  },
+
+  "DL3022": {
+    "title": "COPY --from should references an existing stage",
+    "recommendation": "Ensure COPY --from references a valid build stage or image.",
+    "description": "Invalid stage references cause Docker build failures.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3022"]
+  },
+
+  "DL3023": {
+    "title": "COPY --from cannot references itself",
+    "recommendation": "Do not copy files from the current build stage into itself.",
+    "description": "Self-referencing stages produce invalid Dockerfiles.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3023"]
+  },
+
+  "DL3024": {
+    "title": "Stage aliases should be unique",
+    "recommendation": "Assign a unique name to every build stage.",
+    "description": "Duplicate aliases make Dockerfiles confusing and error-prone.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3024"]
+  },
+
+  "DL3025": {
+    "title": "COPY --from should use a valid image or stage",
+    "recommendation": "Verify that COPY --from points to a valid image or previously defined stage.",
+    "description": "Incorrect references prevent successful builds.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3025"]
+  },
+
+  "DL3026": {
+    "title": "Use trusted base images",
+    "recommendation": "Build from trusted and verified container images whenever possible.",
+    "description": "Reduces supply-chain security risks.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3026"]
+  },
+
+  "DL3027": {
+    "title": "Avoid repeated FROM aliases",
+    "recommendation": "Reuse existing stage aliases consistently and avoid duplicate definitions.",
+    "description": "Improves readability and prevents build confusion.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3027"]
+  },
+
+  "DL3028": {
+    "title": "Use a valid image references",
+    "recommendation": "Specify valid repository names and tags in FROM instructions.",
+    "description": "Invalid image references cause build failures.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3028"]
+  },
+
+  "DL3029": {
+    "title": "Avoid platform-specific assumptions",
+    "recommendation": "Write Dockerfiles that are portable across supported platforms whenever possible.",
+    "description": "Improves compatibility in multi-platform environments.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3029"]
+  },
+
+  "DL3030": {
+    "title": "Use proper shell syntax",
+    "recommendation": "Follow recommended shell syntax and quoting practices in RUN instructions.",
+    "description": "Reduces scripting errors and improves maintainability.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3030"]
+  },
+
+  "DL3031": {
+    "title": "Avoid unnecessary package installation",
+    "recommendation": "Install only the packages required for the application.",
+    "description": "Reduces attack surface and image size.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3031"]
+  },
+
+  "DL3032": {
+    "title": "Minimize Docker image layers",
+    "recommendation": "Combine related RUN instructions where appropriate.",
+    "description": "Produces smaller and more efficient container images.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3032"]
+  },
+
+  "DL3033": {
+    "title": "Avoid unnecessary files",
+    "recommendation": "Remove temporary files after installation steps.",
+    "description": "Reduces image size and potential information exposure.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3033"]
+  },
+
+  "DL3034": {
+    "title": "Prefer deterministic builds",
+    "recommendation": "Pin versions and avoid downloading changing content during builds.",
+    "description": "Improves reproducibility and security.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3034"]
+  },
+
+  "DL3035": {
+    "title": "Use secure download methods",
+    "recommendation": "Verify downloaded files using checksums or signatures.",
+    "description": "Protects against tampered or malicious downloads.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3035"]
+  },
+
+  "DL3036": {
+    "title": "Avoid unnecessary root privileges",
+    "recommendation": "Drop privileges whenever possible by switching to a non-root user.",
+    "description": "Limits the description of a compromised container.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3036"]
+  },
+
+  "DL3037": {
+    "title": "Document exposed services",
+    "recommendation": "Clearly expose only the ports required by the application.",
+    "description": "Reduces accidental service exposure.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3037"]
+  },
+
+  "DL3038": {
+    "title": "Keep Dockerfiles maintainable",
+    "recommendation": "Group related instructions and use descriptive stage names.",
+    "description": "Improves readability and long-term maintenance.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3038"]
+  },
+
+  "DL3039": {
+    "title": "Follow Dockerfile best practices",
+    "recommendation": "Review Dockerfiles regularly against current Docker and Hadolint recommendations.",
+    "description": "Helps maintain secure, efficient, and reliable container builds.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3039"]
+  },
+  "DL3040": {
+    "title": "Use WORKDIR instead of repeated cd commands",
+    "recommendation": "Set the working directory using the WORKDIR instruction rather than using 'cd' inside RUN commands.",
+    "description": "Improves readability, portability, and Docker layer consistency.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3040"]
+  },
+
+  "DL3041": {
+    "title": "Avoid using latest package versions implicitly",
+    "recommendation": "Pin package versions whenever practical to ensure reproducible builds.",
+    "description": "Reduces unexpected behavior caused by upstream package updates.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3041"]
+  },
+
+  "DL3042": {
+    "title": "Avoid unnecessary package recommendations",
+    "recommendation": "Install only required dependencies and disable optional recommended packages where appropriate.",
+    "description": "Produces smaller images with a reduced attack surface.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3042"]
+  },
+
+  "DL3043": {
+    "title": "Avoid caching unnecessary package metadata",
+    "recommendation": "Clean package manager caches after installation if they are no longer required.",
+    "description": "Reduces final image size.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3043"]
+  },
+
+  "DL3044": {
+    "title": "Avoid duplicate package installation",
+    "recommendation": "Install each package only once within the build process.",
+    "description": "Simplifies Dockerfiles and improves build efficiency.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3044"]
+  },
+
+  "DL3045": {
+    "title": "Use secure package repositories",
+    "recommendation": "Install packages only from trusted and verified repositories.",
+    "description": "Reduces supply-chain security risks.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3045"]
+  },
+
+  "DL3046": {
+    "title": "Keep Docker images minimal",
+    "recommendation": "Remove unnecessary tools, packages, and temporary files from the final image.",
+    "description": "Smaller images improve performance and reduce attack surface.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3046"]
+  },
+
+  "DL3047": {
+    "title": "Avoid unnecessary build dependencies",
+    "recommendation": "Use multi-stage builds to keep build tools out of production images.",
+    "description": "Creates smaller, more secure runtime containers.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3047"]
+  },
+
+  "DL3048": {
+    "title": "Verify downloaded artifacts",
+    "recommendation": "Validate downloaded files using checksums or cryptographic signatures.",
+    "description": "Protects against corrupted or malicious downloads.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3048"]
+  },
+
+  "DL3049": {
+    "title": "Use explicit package versions",
+    "recommendation": "Specify explicit package versions where reproducibility is important.",
+    "description": "Ensures deterministic builds across environments.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3049"]
+  },
+
+  "DL3050": {
+    "title": "Avoid unnecessary shell usage",
+    "recommendation": "Prefer exec-form instructions when shell processing is not required.",
+    "description": "Improves signal handling and reduces shell-related issues.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3050"]
+  },
+
+  "DL3051": {
+    "title": "Document image purpose",
+    "recommendation": "Include labels that describe the image, maintainer, and version.",
+    "description": "Improves maintainability and traceability.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3051"]
+  },
+
+  "DL3052": {
+    "title": "Use OCI-compliant image labels",
+    "recommendation": "Follow the Open Container Initiative image label specification.",
+    "description": "Improves interoperability with container tooling.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3052"]
+  },
+
+  "DL3053": {
+    "title": "Provide image source information",
+    "recommendation": "Include repository and source-code metadata using OCI labels.",
+    "description": "Improves traceability and software supply-chain visibility.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3053"]
+  },
+
+  "DL3054": {
+    "title": "Provide image version label",
+    "recommendation": "Include an OCI version label that matches the application release.",
+    "description": "Simplifies image identification and lifecycle management.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3054"]
+  },
+
+  "DL3055": {
+    "title": "Provide image license information",
+    "recommendation": "Include the appropriate OCI license label.",
+    "description": "Improves license compliance and governance.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3055"]
+  },
+
+  "DL3056": {
+    "title": "Provide vendor information",
+    "recommendation": "Include the OCI vendor label identifying the software publisher.",
+    "description": "Improves software provenance.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3056"]
+  },
+
+  "DL3057": {
+    "title": "Provide image documentation URL",
+    "recommendation": "Include a documentation label pointing to user or developer documentation.",
+    "description": "Makes operational documentation easier to locate.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3057"]
+  },
+
+  "DL3058": {
+    "title": "Provide revision information",
+    "recommendation": "Include the source-code revision or Git commit in image metadata.",
+    "description": "Improves traceability and debugging.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3058"]
+  },
+
+  "DL3059": {
+    "title": "Provide image creation timestamp",
+    "recommendation": "Include a standardized image creation timestamp.",
+    "description": "Multiple consecutive RUN instructions increase the number of image layers and can make Dockerfiles harder to maintain.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL3059"]
+  },
+  "DL4000": {
+    "title": "Use MAINTAINER is deprecated",
+    "recommendation": "Replace the deprecated MAINTAINER instruction with the OCI LABEL instruction.",
+    "description": "Ensures compatibility with modern Docker image standards.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL4000"]
+  },
+
+  "DL4001": {
+    "title": "Use LABEL instead of MAINTAINER",
+    "recommendation": "Store maintainer information using OCI-compliant LABEL metadata.",
+    "description": "Improves portability and metadata compatibility.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL4001"]
+  },
+
+  "DL4003": {
+    "title": "Multiple CMD instructions",
+    "recommendation": "Only one CMD instruction should exist in a Dockerfile. Remove redundant CMD statements.",
+    "description": "Only the last CMD instruction is executed; earlier ones are ignored.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL4003"]
+  },
+
+  "DL4004": {
+    "title": "Multiple ENTRYPOINT instructions",
+    "recommendation": "Use only one ENTRYPOINT instruction in the Dockerfile.",
+    "description": "Only the final ENTRYPOINT takes effect, which may cause unexpected behavior.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL4004"]
+  },
+
+  "DL4005": {
+    "title": "Multiple HEALTHCHECK instructions",
+    "recommendation": "Use a single HEALTHCHECK instruction for the container.",
+    "description": "Docker ignores all HEALTHCHECK instructions except the last one.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL4005"]
+  },
+
+  "DL4006": {
+    "title": "Set a default shell explicitly",
+    "recommendation": "Use the SHELL instruction when a non-default shell is required.",
+    "description": "Improves portability and avoids shell-specific behavior differences.",
+    "references": ["https://github.com/hadolint/hadolint/wiki/DL4006"]
+  }
+}

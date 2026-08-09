@@ -1,0 +1,80 @@
+{
+  "severity": {
+    "CRITICAL": {
+      "priority": 5,
+      "color": "#8B0000",
+      "description": "Immediate remediation required."
+    },
+    "HIGH": {
+      "priority": 4,
+      "color": "#FF4500",
+      "description": "Fix as soon as possible."
+    },
+    "MEDIUM": {
+      "priority": 3,
+      "color": "#FFA500",
+      "description": "Fix during regular maintenance."
+    },
+    "LOW": {
+      "priority": 2,
+      "color": "#FFD700",
+      "description": "Low security risk."
+    },
+    "INFO": {
+      "priority": 1,
+      "color": "#1E90FF",
+      "description": "Informational finding."
+    },
+    "UNKNOWN": {
+      "priority": 0,
+      "color": "#808080",
+      "description": "Severity not supplied."
+    }
+  },
+
+  "status": {
+    "OPEN": {
+      "description": "Issue is unresolved.",
+      "closed": false
+    },
+    "FIXED": {
+      "description": "Issue has been remediated.",
+      "closed": true
+    },
+    "SUPPRESSED": {
+      "description": "Ignored by policy.",
+      "closed": true
+    },
+    "FALSE_POSITIVE": {
+      "description": "Confirmed false positive.",
+      "closed": true
+    },
+    "UNDER_REVIEW": {
+      "description": "Currently under investigation.",
+      "closed": false
+    },
+    "ACCEPTED_RISK": {
+      "description": "Risk accepted by the organization.",
+      "closed": true
+    }
+  },
+
+  "default_recommendation": "Review the finding and follow vendor guidance. Update affected software to a secure version when available.",
+
+  "default_reference": "https://owasp.org/www-project-top-ten/",
+
+  "cvss": {
+    "critical": 9.0,
+    "high": 7.0,
+    "medium": 4.0,
+    "low": 0.1
+  },
+
+  "compliance": {
+    "pass_score": 100,
+    "fail_on": [
+      "CRITICAL",
+      "HIGH"
+    ]
+  }
+}

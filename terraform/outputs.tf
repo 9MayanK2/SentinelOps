@@ -57,4 +57,3 @@ output "rds_username" {
   description = "Amazon RDS MySQL Username"
   value       = module.rds.db_username
 }
-

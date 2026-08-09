@@ -1,0 +1,41 @@
+{
+    "tool": "zap",
+    "category": "DAST Web Vulnerability",
+    "scanner_type": "Dynamic",
+    "scan_time": "2026-08-09T10:24:10.844820",
+    "status": "PASS",
+    "summary": {
+        "total": 0,
+        "critical": 0,
+        "high": 0,
+        "medium": 0,
+        "low": 0,
+        "info": 0,
+        "unknown": 0,
+        "fixable": 0,
+        "exploitable": 0,
+        "suppressed": 0,
+        "scanned_targets": 1,
+        "scanned_packages": 0,
+        "scanned_files": 0,
+        "passed_checks": 0,
+        "failed_checks": 0,
+        "compliance_score": 100.0
+    },
+    "metadata": {
+        "project_name": "HopeGivers",
+        "scanner": "zap",
+        "scanner_version": "latest",
+        "parser_version": "1.0.0",
+        "hostname": "JagguDA",
+        "username": "jaggu",
+        "operating_system": "Linux",
+        "os_version": "6.8.0-136-generic",
+        "python_version": "3.10.12",
+        "git_branch": "features",
+        "git_commit": "3316850",
+        "scan_id": "ZAP-20260809102410-372F74",
+        "generated_at": "2026-08-09T10:24:10.844809"
+    },
+    "findings": []
+}

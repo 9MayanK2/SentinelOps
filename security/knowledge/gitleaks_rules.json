@@ -1,0 +1,66 @@
+{
+  "aws-access-token": {
+    "title": "AWS Access Key ID Detected",
+    "description": "An AWS Access Key ID was detected in source code or configuration.",
+    "recommendation": "Revoke the exposed AWS key immediately in AWS IAM, rotate credentials, and remove it from repository history using git-filter-repo or BFG Repo-Cleaner.",
+    "references": [
+      "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html"
+    ]
+  },
+  "aws-secret-access-key": {
+    "title": "AWS Secret Access Key Detected",
+    "description": "An AWS Secret Access Key was detected in source code or configuration.",
+    "recommendation": "Revoke the exposed AWS secret key immediately in AWS IAM, rotate credentials, and store secrets using environment variables or a secrets manager.",
+    "references": [
+      "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html"
+    ]
+  },
+  "generic-api-key": {
+    "title": "Generic API Key Detected",
+    "description": "A generic secret or API key pattern was detected in the repository.",
+    "recommendation": "Revoke and rotate the exposed API key immediately. Move API keys into secure environment variables or secret store.",
+    "references": [
+      "https://owasp.org/www-community/vulnerabilities/Use_of_hard-coded_password"
+    ]
+  },
+  "github-pat": {
+    "title": "GitHub Personal Access Token Detected",
+    "description": "A GitHub Personal Access Token (PAT) was exposed in source code.",
+    "recommendation": "Revoke the GitHub PAT in GitHub account settings immediately and generate a new token with minimal necessary scopes.",
+    "references": [
+      "https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token"
+    ]
+  },
+  "private-key": {
+    "title": "Private Key Detected",
+    "description": "An unencrypted private key (RSA, SSH, PGP, etc.) was detected.",
+    "recommendation": "Immediately revoke and replace the compromised private key. Remove key files from source control and store in encrypted vault.",
+    "references": [
+      "https://owasp.org/www-community/vulnerabilities/Use_of_hard-coded_cryptographic_key"
+    ]
+  },
+  "slack-web-hook": {
+    "title": "Slack Incoming Webhook URL Detected",
+    "description": "A Slack Webhook URL was found exposed in the codebase.",
+    "recommendation": "Delete the exposed Slack webhook in Slack App configuration and create a new incoming webhook.",
+    "references": [
+      "https://api.slack.com/messaging/webhooks"
+    ]
+  },
+  "stripe-api-key": {
+    "title": "Stripe API Key Detected",
+    "description": "A Stripe secret or restricted API key was detected.",
+    "recommendation": "Roll the exposed Stripe API key in the Stripe Dashboard immediately to prevent unauthorized financial transactions.",
+    "references": [
+      "https://stripe.com/docs/keys"
+    ]
+  },
+  "jwt": {
+    "title": "Hardcoded JWT Token Detected",
+    "description": "A JSON Web Token (JWT) was detected in source files.",
+    "recommendation": "Invalidate the JWT secret/token and refrain from committing hardcoded authorization tokens.",
+    "references": [
+      "https://jwt.io/introduction"
+    ]
+  }
+}

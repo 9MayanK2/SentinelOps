@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DevSecOps Security & Compliance Master Report</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 20px; }
+        .container { max-width: 1100px; margin: 0 auto; background: #1e293b; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #334155; padding-bottom: 15px; }
+        .title { font-size: 24px; font-weight: bold; color: #38bdf8; }
+        .subtitle { font-size: 13px; color: #94a3b8; margin-top: 4px; }
+        .badge { padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 13px; text-transform: uppercase; }
+        .badge-critical { background: #991b1b; color: #fca5a5; }
+        .badge-high { background: #c2410c; color: #ffedd5; }
+        .badge-medium { background: #854d0e; color: #fef08a; }
+        .badge-low { background: #15803d; color: #bbf7d0; }
+        .badge-info { background: #1e40af; color: #bfdbfe; }
+        .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 25px 0; }
+        .card { background: #0f172a; padding: 20px; border-radius: 8px; text-align: center; border: 1px solid #334155; }
+        .card .val { font-size: 28px; font-weight: bold; margin-top: 5px; }
+        .fw-item { margin-bottom: 15px; }
+        .fw-header { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 14px; }
+        .progress-bar { background: #334155; height: 10px; border-radius: 5px; overflow: hidden; }
+        .progress-fill { background: #38bdf8; height: 100%; }
+        .system-info { background: #0f172a; padding: 15px; border-radius: 8px; border-left: 4px solid #38bdf8; font-size: 13px; margin: 20px 0; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #334155; }
+        th { background: #0f172a; color: #94a3b8; }
+        code { font-family: monospace; background: #0f172a; padding: 2px 6px; border-radius: 4px; color: #e2e8f0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <div class="title">🛡️ DevSecOps Master Security & Compliance Report</div>
+                <div class="subtitle">Powered by 4-Layer Universal Compliance Lookup & Decoupled Risk Engine</div>
+            </div>
+            <div class="badge" style="background:#ef4444; color:#fff;">Risk Level: CRITICAL</div>
+        </div>
+
+        <div class="cards">
+            <div class="card"><div>Total Findings</div><div class="val">64</div></div>
+            <div class="card"><div>Total Risk Score</div><div class="val">194 Pts</div></div>
+            <div class="card"><div>Framework Compliance</div><div class="val" style="color:#38bdf8;">43.3%</div></div>
+            <div class="card"><div>Critical / High</div><div class="val" style="color:#ef4444;">3 / 22</div></div>
+        </div>
+
+        <div class="system-info">
+            <strong>Architecture Note:</strong> Compliance mapping uses a 4-Layer Universal Engine (Layer 1: Rule-ID, Layer 2: Open Standards CWE DB, Layer 3: NVD API 2.0 Enrichment, Layer 4: Universal Category Fallback). Risk scoring is decoupled to reflect pure vulnerability threat density.
+        </div>
+
+        <h3>📜 Compliance Posture by Framework</h3>
+        
+            <div class="fw-item">
+                <div class="fw-header">
+                    <span>OWASP TOP 10 2021</span>
+                    <span>30.0% (3/10 Controls Passed)</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" style="width: 30.0%;"></div></div>
+            </div>
+            
+            <div class="fw-item">
+                <div class="fw-header">
+                    <span>CIS BENCHMARKS</span>
+                    <span>40.0% (6/15 Controls Passed)</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" style="width: 40.0%;"></div></div>
+            </div>
+            
+            <div class="fw-item">
+                <div class="fw-header">
+                    <span>NIST SP 800 53</span>
+                    <span>60.0% (12/20 Controls Passed)</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" style="width: 60.0%;"></div></div>
+            </div>
+            
+
+        <h3>🔍 Detailed Security Findings & Compliance Layers</h3>
+        <table>
+            <thead>
+                <tr><th>Severity</th><th>Tool</th><th>Rule ID</th><th>File / Location</th><th>Description</th><th>Compliance Layer</th></tr>
+            </thead>
+            <tbody>
+                
+            <tr>
+                <td><span class="badge badge-critical">CRITICAL</span></td>
+                <td><strong>Gitleaks</strong></td>
+                <td><code>private-key</code></td>
+                <td><code>security/config/keys/cosign.key:1</code></td>
+                <td>Identified a Private Key, which may compromise cryptographic security and sensitive data encryption. (Match: RED...TED)</td>
+                <td><small>Layer 1 (private-key Rule Override), Layer 2 (CWE-798 Database Match), Layer 2 (CWE-311 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-critical">CRITICAL</span></td>
+                <td><strong>Gitleaks</strong></td>
+                <td><code>aws-access-token</code></td>
+                <td><code>testing/gitleaks/test_secrets.txt:1</code></td>
+                <td>Identified a pattern that may indicate AWS credentials, risking unauthorized cloud resource access and data breaches on AWS platforms. (Match: RED...TED)</td>
+                <td><small>Layer 1 (aws-access-token Rule Override), Layer 2 (CWE-798 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-high">HIGH</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-45447</code></td>
+                <td><code>sentinelops-backend:latest (alpine 3.23.4)</code></td>
+                <td>openssl: Heap Use-After-Free in OpenSSL PKCS7_verify()</td>
+                <td><small>Layer 2 (CWE-416 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-medium">MEDIUM</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-34182</code></td>
+                <td><code>sentinelops-backend:latest (alpine 3.23.4)</code></td>
+                <td>openssl: CMS AuthEnvelopedData Processing May Accept Forged Messages</td>
+                <td><small>Layer 2 (CWE-354 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-medium">MEDIUM</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-34183</code></td>
+                <td><code>sentinelops-backend:latest (alpine 3.23.4)</code></td>
+                <td>openssl: Unbounded Memory Growth in the QUIC PATH_CHALLENGE Handler</td>
+                <td><small>Layer 2 (CWE-1325 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-medium">MEDIUM</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-42764</code></td>
+                <td><code>sentinelops-backend:latest (alpine 3.23.4)</code></td>
+                <td>openssl: NULL pointer dereference in QUIC server initial packet handling</td>
+                <td><small>Layer 2 (CWE-476 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-medium">MEDIUM</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-45445</code></td>
+                <td><code>sentinelops-backend:latest (alpine 3.23.4)</code></td>
+                <td>openssl: AES-OCB IV Ignored on EVP_Cipher() Path</td>
+                <td><small>Layer 2 (CWE-325 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-low">LOW</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-34180</code></td>
+                <td><code>sentinelops-backend:latest (alpine 3.23.4)</code></td>
+                <td>openssl: OpenSSL: Heap buffer over-read in ASN.1 decoding can lead to denial of service or information disclosure.</td>
+                <td><small>Layer 2 (CWE-125 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-low">LOW</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-34181</code></td>
+                <td><code>sentinelops-backend:latest (alpine 3.23.4)</code></td>
+                <td>openssl: PKCS#12 Files with PBMAC1 Are Accepted with Short HMAC Keys</td>
+                <td><small>Layer 2 (CWE-354 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-low">LOW</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-42766</code></td>
+                <td><code>sentinelops-backend:latest (alpine 3.23.4)</code></td>
+                <td>openssl: Possible NULL Dereference in Password-Based CMS Decryption</td>
+                <td><small>Layer 2 (CWE-476 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-low">LOW</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-42767</code></td>
+                <td><code>sentinelops-backend:latest (alpine 3.23.4)</code></td>
+                <td>openssl: NULL Pointer Dereference in CRMF EncryptedValue Decryption</td>
+                <td><small>Layer 2 (CWE-476 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-low">LOW</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-42768</code></td>
+                <td><code>sentinelops-backend:latest (alpine 3.23.4)</code></td>
+                <td>openssl: Multi-RecipientInfo Bleichenbacher Oracle in CMS_decrypt() and PKCS7_decrypt()</td>
+                <td><small>Layer 2 (CWE-514 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-low">LOW</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-42769</code></td>
+                <td><code>sentinelops-backend:latest (alpine 3.23.4)</code></td>
+                <td>openssl: Trust-Anchor Substitution via cert/issuer Typo in CMP rootCaKeyUpdate</td>
+                <td><small>Layer 2 (CWE-295 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-low">LOW</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-42770</code></td>
+                <td><code>sentinelops-backend:latest (alpine 3.23.4)</code></td>
+                <td>openssl: FFC-DH Peer Validation Uses Attacker-Supplied q</td>
+                <td><small>Layer 2 (CWE-325 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-low">LOW</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-45446</code></td>
+                <td><code>sentinelops-backend:latest (alpine 3.23.4)</code></td>
+                <td>openssl: Incorrect Tag Processing for Empty Messages in AES-GCM-SIV and AES-SIV modes</td>
+                <td><small>Layer 2 (CWE-325 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-low">LOW</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-7383</code></td>
+                <td><code>sentinelops-backend:latest (alpine 3.23.4)</code></td>
+                <td>openssl: OpenSSL: Heap buffer overflow due to signed integer overflow in Unicode output sizing</td>
+                <td><small>Layer 2 (CWE-787 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-low">LOW</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-9076</code></td>
+                <td><code>sentinelops-backend:latest (alpine 3.23.4)</code></td>
+                <td>openssl: OpenSSL: Denial of Service due to heap out-of-bounds read in CMS password-based decryption</td>
+                <td><small>Layer 2 (CWE-125 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-high">HIGH</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-45447</code></td>
+                <td><code>sentinelops-backend:latest (alpine 3.23.4)</code></td>
+                <td>openssl: Heap Use-After-Free in OpenSSL PKCS7_verify()</td>
+                <td><small>Layer 2 (CWE-416 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-medium">MEDIUM</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-34182</code></td>
+                <td><code>sentinelops-backend:latest (alpine 3.23.4)</code></td>
+                <td>openssl: CMS AuthEnvelopedData Processing May Accept Forged Messages</td>
+                <td><small>Layer 2 (CWE-354 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-medium">MEDIUM</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-34183</code></td>
+                <td><code>sentinelops-backend:latest (alpine 3.23.4)</code></td>
+                <td>openssl: Unbounded Memory Growth in the QUIC PATH_CHALLENGE Handler</td>
+                <td><small>Layer 2 (CWE-1325 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-medium">MEDIUM</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-42764</code></td>
+                <td><code>sentinelops-backend:latest (alpine 3.23.4)</code></td>
+                <td>openssl: NULL pointer dereference in QUIC server initial packet handling</td>
+                <td><small>Layer 2 (CWE-476 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-medium">MEDIUM</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-45445</code></td>
+                <td><code>sentinelops-backend:latest (alpine 3.23.4)</code></td>
+                <td>openssl: AES-OCB IV Ignored on EVP_Cipher() Path</td>
+                <td><small>Layer 2 (CWE-325 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-low">LOW</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-34180</code></td>
+                <td><code>sentinelops-backend:latest (alpine 3.23.4)</code></td>
+                <td>openssl: OpenSSL: Heap buffer over-read in ASN.1 decoding can lead to denial of service or information disclosure.</td>
+                <td><small>Layer 2 (CWE-125 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-low">LOW</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-34181</code></td>
+                <td><code>sentinelops-backend:latest (alpine 3.23.4)</code></td>
+                <td>openssl: PKCS#12 Files with PBMAC1 Are Accepted with Short HMAC Keys</td>
+                <td><small>Layer 2 (CWE-354 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-low">LOW</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-42766</code></td>
+                <td><code>sentinelops-backend:latest (alpine 3.23.4)</code></td>
+                <td>openssl: Possible NULL Dereference in Password-Based CMS Decryption</td>
+                <td><small>Layer 2 (CWE-476 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-low">LOW</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-42767</code></td>
+                <td><code>sentinelops-backend:latest (alpine 3.23.4)</code></td>
+                <td>openssl: NULL Pointer Dereference in CRMF EncryptedValue Decryption</td>
+                <td><small>Layer 2 (CWE-476 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-low">LOW</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-42768</code></td>
+                <td><code>sentinelops-backend:latest (alpine 3.23.4)</code></td>
+                <td>openssl: Multi-RecipientInfo Bleichenbacher Oracle in CMS_decrypt() and PKCS7_decrypt()</td>
+                <td><small>Layer 2 (CWE-514 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-low">LOW</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-42769</code></td>
+                <td><code>sentinelops-backend:latest (alpine 3.23.4)</code></td>
+                <td>openssl: Trust-Anchor Substitution via cert/issuer Typo in CMP rootCaKeyUpdate</td>
+                <td><small>Layer 2 (CWE-295 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-low">LOW</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-42770</code></td>
+                <td><code>sentinelops-backend:latest (alpine 3.23.4)</code></td>
+                <td>openssl: FFC-DH Peer Validation Uses Attacker-Supplied q</td>
+                <td><small>Layer 2 (CWE-325 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-low">LOW</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-45446</code></td>
+                <td><code>sentinelops-backend:latest (alpine 3.23.4)</code></td>
+                <td>openssl: Incorrect Tag Processing for Empty Messages in AES-GCM-SIV and AES-SIV modes</td>
+                <td><small>Layer 2 (CWE-325 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-low">LOW</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-7383</code></td>
+                <td><code>sentinelops-backend:latest (alpine 3.23.4)</code></td>
+                <td>openssl: OpenSSL: Heap buffer overflow due to signed integer overflow in Unicode output sizing</td>
+                <td><small>Layer 2 (CWE-787 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-low">LOW</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-9076</code></td>
+                <td><code>sentinelops-backend:latest (alpine 3.23.4)</code></td>
+                <td>openssl: OpenSSL: Denial of Service due to heap out-of-bounds read in CMS password-based decryption</td>
+                <td><small>Layer 2 (CWE-125 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-medium">MEDIUM</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-48758</code></td>
+                <td><code>Node.js</code></td>
+                <td>sigstore-core: @sigstore/core: Signature bypass due to incorrect encoding in preAuthEncoding</td>
+                <td><small>Layer 2 (CWE-347 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-high">HIGH</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>GHSA-j4mr-9xw3-c9jx</code></td>
+                <td><code>Node.js</code></td>
+                <td>Out-of-bounds Read in base64-url</td>
+                <td><small>Layer 1 (GHSA-j4mr-9xw3-c9jx Advisory Override)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-high">HIGH</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>NSWG-ECO-434</code></td>
+                <td><code>Node.js</code></td>
+                <td>Out-of-bounds Read</td>
+                <td><small>Layer 1 (NSWG-ECO-434 Advisory Override)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-high">HIGH</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-13149</code></td>
+                <td><code>Node.js</code></td>
+                <td>brace-expansion: Brace-expansion: Denial of Service due to exponential-time complexity</td>
+                <td><small>Layer 2 (CWE-400 Database Match), Layer 2 (CWE-407 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-high">HIGH</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-14257</code></td>
+                <td><code>Node.js</code></td>
+                <td>brace-expansion: Brace-expansion: Denial of Service via memory exhaustion in expand() function</td>
+                <td><small>Layer 2 (CWE-400 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-high">HIGH</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-69152</code></td>
+                <td><code>Node.js</code></td>
+                <td>brace-expansion: brace-expansion: Denial of Service via unbounded intermediate arrays</td>
+                <td><small>Layer 2 (CWE-400 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-medium">MEDIUM</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-33750</code></td>
+                <td><code>Node.js</code></td>
+                <td>brace-expansion: brace-expansion: Denial of Service via zero step value in brace pattern</td>
+                <td><small>Layer 2 (CWE-400 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-low">LOW</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2025-5889</code></td>
+                <td><code>Node.js</code></td>
+                <td>brace-expansion: juliangruber brace-expansion index.js expand redos</td>
+                <td><small>Layer 2 (CWE-400 Database Match), Layer 2 (CWE-1333 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-high">HIGH</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2024-21538</code></td>
+                <td><code>Node.js</code></td>
+                <td>cross-spawn: regular expression denial of service</td>
+                <td><small>Layer 2 (CWE-1333 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-low">LOW</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-24001</code></td>
+                <td><code>Node.js</code></td>
+                <td>jsdiff: denial of service vulnerability in parsePatch and applyPatch</td>
+                <td><small>Layer 2 (CWE-400 Database Match), Layer 2 (CWE-1333 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-high">HIGH</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2025-64756</code></td>
+                <td><code>Node.js</code></td>
+                <td>glob: glob: Command Injection Vulnerability via Malicious Filenames</td>
+                <td><small>Layer 2 (CWE-78 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-high">HIGH</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-69192</code></td>
+                <td><code>Node.js</code></td>
+                <td>ip-address: ip-address: Inconsistent IP address parsing leads to Server-Side Request Forgery (SSRF) and trust-boundary bypass</td>
+                <td><small>Layer 2 (CWE-20 Database Match), Layer 2 (CWE-918 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-medium">MEDIUM</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-42338</code></td>
+                <td><code>Node.js</code></td>
+                <td>ip-address: ip-address: Cross-site scripting via improper HTML escaping of untrusted input</td>
+                <td><small>Layer 2 (CWE-79 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-high">HIGH</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-26996</code></td>
+                <td><code>Node.js</code></td>
+                <td>minimatch: minimatch: Denial of Service via specially crafted glob patterns</td>
+                <td><small>Layer 2 (CWE-1333 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-high">HIGH</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-27903</code></td>
+                <td><code>Node.js</code></td>
+                <td>minimatch: minimatch: Denial of Service due to unbounded recursive backtracking via crafted glob patterns</td>
+                <td><small>Layer 2 (CWE-407 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-high">HIGH</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-27904</code></td>
+                <td><code>Node.js</code></td>
+                <td>minimatch: Minimatch: Denial of Service via catastrophic backtracking in glob expressions</td>
+                <td><small>Layer 2 (CWE-1333 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-medium">MEDIUM</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>GHSA-664h-wqgq-64gw</code></td>
+                <td><code>Node.js</code></td>
+                <td>Mongoose: Prototype pollution in mongoose update casting via __proto__-prefixed dotted path (Schema._getSchema/path getter)</td>
+                <td><small>Layer 1 (GHSA-664h-wqgq-64gw Advisory Override)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-high">HIGH</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>GHSA-p6gq-j5cr-w38f</code></td>
+                <td><code>Node.js</code></td>
+                <td>Nodemailer: Message-level raw option bypasses disableFileAccess/disableUrlAccess, enabling arbitrary file read and full-response SSRF in the delivered message</td>
+                <td><small>Layer 1 (GHSA-p6gq-j5cr-w38f Advisory Override)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-high">HIGH</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-48815</code></td>
+                <td><code>Node.js</code></td>
+                <td>sigstore: Sigstore: Unauthorized certificates accepted due to ignored `certificateOIDs` verification option</td>
+                <td><small>Layer 2 (CWE-347 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-critical">CRITICAL</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-59873</code></td>
+                <td><code>Node.js</code></td>
+                <td>tar: node-tar: Denial of Service via crafted gzip bomb</td>
+                <td><small>Layer 2 (CWE-770 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-high">HIGH</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-23745</code></td>
+                <td><code>Node.js</code></td>
+                <td>node-tar: tar: node-tar: Arbitrary file overwrite and symlink poisoning via unsanitized linkpaths in archives</td>
+                <td><small>Layer 2 (CWE-22 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-high">HIGH</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-23950</code></td>
+                <td><code>Node.js</code></td>
+                <td>node-tar: tar: node-tar: Arbitrary file overwrite via Unicode path collision race condition</td>
+                <td><small>Layer 2 (CWE-176 Database Match), Layer 2 (CWE-352 Database Match), Layer 2 (CWE-367 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-high">HIGH</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-24842</code></td>
+                <td><code>Node.js</code></td>
+                <td>node-tar: tar: node-tar: Arbitrary file creation via path traversal bypass in hardlink security check</td>
+                <td><small>Layer 2 (CWE-22 Database Match), Layer 2 (CWE-59 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-high">HIGH</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-26960</code></td>
+                <td><code>Node.js</code></td>
+                <td>node-tar: node-tar: Arbitrary file read/write via malicious archive hardlink creation</td>
+                <td><small>Layer 2 (CWE-22 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-high">HIGH</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-29786</code></td>
+                <td><code>Node.js</code></td>
+                <td>node-tar: hardlink path traversal via drive-relative linkpath</td>
+                <td><small>Layer 2 (CWE-22 Database Match), Layer 2 (CWE-59 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-high">HIGH</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-31802</code></td>
+                <td><code>Node.js</code></td>
+                <td>tar: tar: File overwrite via drive-relative symlink traversal</td>
+                <td><small>Layer 2 (CWE-22 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-high">HIGH</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-59874</code></td>
+                <td><code>Node.js</code></td>
+                <td>tar: Node-tar: Denial of Service via malformed tar archive header</td>
+                <td><small>Layer 2 (CWE-835 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-medium">MEDIUM</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-53655</code></td>
+                <td><code>Node.js</code></td>
+                <td>node-tar: node-tar: File smuggling due to inconsistent tar archive parsing</td>
+                <td><small>Layer 2 (CWE-436 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-medium">MEDIUM</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-59871</code></td>
+                <td><code>Node.js</code></td>
+                <td>node-tar: node-tar: Denial of Service due to incorrect PAX path handling</td>
+                <td><small>Layer 2 (CWE-704 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-medium">MEDIUM</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>CVE-2026-59875</code></td>
+                <td><code>Node.js</code></td>
+                <td>node-tar: node-tar: Denial of Service via crafted archive with NUL bytes in metadata</td>
+                <td><small>Layer 2 (CWE-248 Database Match)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-medium">MEDIUM</span></td>
+                <td><strong>Trivy</strong></td>
+                <td><code>GHSA-r292-9mhp-454m</code></td>
+                <td><code>Node.js</code></td>
+                <td>node-tar: Uncontrolled recursion in mapHas/filesFilter allows uncatchable stack-overflow DoS via crafted long-path tar with member selection</td>
+                <td><small>Layer 1 (GHSA-r292-9mhp-454m Advisory Override)</small></td>
+            </tr>
+            
+            <tr>
+                <td><span class="badge badge-info">INFO</span></td>
+                <td><strong>Hadolint</strong></td>
+                <td><code>DL3059</code></td>
+                <td><code>/workspace/app/client/Dockerfile:60</code></td>
+                <td>Multiple consecutive `RUN` instructions. Consider consolidation.</td>
+                <td><small>Layer 1 (DL3059 Rule Override), Layer 2 (CWE-20 Database Match)</small></td>
+            </tr>
+            
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

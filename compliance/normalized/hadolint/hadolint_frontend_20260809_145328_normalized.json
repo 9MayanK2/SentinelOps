@@ -1,0 +1,76 @@
+{
+    "tool": "Hadolint",
+    "category": "Container Security",
+    "scanner_type": "Static",
+    "scan_time": "2026-08-09T09:23:28.609910",
+    "status": "PASS",
+    "summary": {
+        "total": 1,
+        "critical": 0,
+        "high": 0,
+        "medium": 0,
+        "low": 0,
+        "info": 1,
+        "unknown": 0,
+        "fixable": 0,
+        "exploitable": 0,
+        "suppressed": 0,
+        "scanned_targets": 1,
+        "scanned_packages": 0,
+        "scanned_files": 1,
+        "passed_checks": 0,
+        "failed_checks": 0,
+        "compliance_score": 100.0
+    },
+    "metadata": {
+        "project_name": "HopeGivers",
+        "scanner": "Hadolint",
+        "scanner_version": "latest",
+        "parser_version": "1.0.0",
+        "hostname": "JagguDA",
+        "username": "jaggu",
+        "operating_system": "Linux",
+        "os_version": "6.8.0-136-generic",
+        "python_version": "3.10.12",
+        "git_branch": "features",
+        "git_commit": "2cd8606",
+        "scan_id": "HADOLINT-20260809092328-CA9FE9",
+        "generated_at": "2026-08-09T09:23:28.609899"
+    },
+    "findings": [
+        {
+            "tool": "Hadolint",
+            "category": "Container Security",
+            "rule_id": "DL3059",
+            "severity": "INFO",
+            "file": "/workspace/app/client/Dockerfile",
+            "line": 60,
+            "message": "Multiple consecutive `RUN` instructions. Consider consolidation.",
+            "recommendation": "Include a standardized image creation timestamp.",
+            "status": "OPEN",
+            "scan_time": "2026-08-09T09:23:28.609910",
+            "package_name": null,
+            "installed_version": null,
+            "fixed_version": null,
+            "cvss_score": null,
+            "cwe": [
+                "CWE-20"
+            ],
+            "cve": null,
+            "severity_source": "Hadolint",
+            "target": "/workspace/app/client/Dockerfile",
+            "target_class": "Dockerfile",
+            "target_type": "Container",
+            "description": "Multiple consecutive RUN instructions increase the number of image layers and can make Dockerfiles harder to maintain.",
+            "primary_url": "https://github.com/hadolint/hadolint/wiki/DL3059",
+            "references": [
+                "https://github.com/hadolint/hadolint/wiki/DL3059"
+            ],
+            "compliance": [],
+            "exploit_available": false,
+            "fix_available": false,
+            "epss_score": null,
+            "kev": false
+        }
+    ]
+}

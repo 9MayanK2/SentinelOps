@@ -1,0 +1,41 @@
+namespace: sentinelops
+
+backend:
+  replicaCount: 2
+
+  image:
+    repository: 284064534086.dkr.ecr.us-east-1.amazonaws.com/sentinelops-backend
+    tag: latest
+    pullPolicy: Always
+
+  service:
+    port: 5000
+
+frontend:
+  replicaCount: 2
+
+  image:
+    repository: 284064534086.dkr.ecr.us-east-1.amazonaws.com/sentinelops-frontend
+    tag: latest
+    pullPolicy: Always
+
+  service:
+    port: 80
+
+  containerPort: 8080
+
+config:
+  port: "5000"
+  nodeEnv: "production"
+
+secret:
+  mongoUrl: ""
+  jwtSecret: ""
+  emailUser: ""
+  emailPass: ""
+
+ingress:
+  enabled: true
+  className: alb
+  scheme: internet-facing
+  targetType: ip

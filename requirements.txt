@@ -1,0 +1,6 @@
+# DevSecOps Security Framework Dependencies
+reportlab>=4.0.0
+pyyaml>=6.0
+requests>=2.31.0
+psycopg2-binary>=2.9.9
+pymysql

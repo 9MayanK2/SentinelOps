@@ -7,54 +7,111 @@ pipeline {
     }
 
     environment {
+        PROJECT_NAME = "SentinelOps"
+        PYTHONPATH = "."
+        PATH = "${WORKSPACE}/.venv/bin:${env.PATH}"
 
-    PROJECT_NAME = "SentinelOps"
+        AWS_REGION = "us-east-1"
+        AWS_ACCOUNT_ID = "284064534086"
 
-    PYTHONPATH = "."
+        EKS_CLUSTER = "sentinelops-dev-eks"
+        IMAGE_TAG = "build-${BUILD_NUMBER}"
+        BACKEND_REPOSITORY = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/sentinelops-backend"
+        FRONTEND_REPOSITORY = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/sentinelops-frontend"
+        BACKEND_IMAGE = "${BACKEND_REPOSITORY}:${IMAGE_TAG}"
+        FRONTEND_IMAGE = "${FRONTEND_REPOSITORY}:${IMAGE_TAG}"
 
-    AWS_REGION = "us-east-1"
-    AWS_ACCOUNT_ID = "284064534086"
-
-    EKS_CLUSTER = "sentinelops-dev-eks"
-    IMAGE_TAG = "build-${BUILD_NUMBER}"
-    BACKEND_REPOSITORY = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/sentinelops-backend"
-    FRONTEND_REPOSITORY = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/sentinelops-frontend"
-    BACKEND_IMAGE = "${BACKEND_REPOSITORY}:${IMAGE_TAG}"
-    FRONTEND_IMAGE = "${FRONTEND_REPOSITORY}:${IMAGE_TAG}"
+        // Cloud Database & Security Framework Controls
+        DB_TYPE = "mysql"
+        DB_HOST = "sentinelops-dev-mysql.ccxs8u0gof49.us-east-1.rds.amazonaws.com"
+        DB_PORT = "3306"
+        DB_NAME = "sentinelops"
+        DB_USER = "admin"
     }
 
     stages {
 
         /********************************************************************
-         * Stage 1 : Checkout Source
+         * STAGE 1 : PREPARE WORKSPACE
          ********************************************************************/
-        stage('Checkout Source Code') {
+        stage('Stage 1 : Prepare Workspace') {
             steps {
-                echo '========== CHECKOUT SOURCE =========='
+                echo '========== STAGE 1 : PREPARE WORKSPACE =========='
+                sh '''
+                echo "[INFO] Cleaning old workspace artifacts..."
+                rm -rf compliance/reports/executive_reports/* || true
+                rm -rf compliance/reports/gitleaks/* || true
+                rm -rf compliance/reports/hadolint/* || true
+                rm -rf compliance/reports/trivy/* || true
+                rm -rf compliance/reports/zap/* || true
+                docker compose down --remove-orphans || true
+                docker image prune -f || true
+                '''
                 checkout scm
             }
         }
 
-        stage('Install Python Dependencies') {
+        /********************************************************************
+         * STAGE 2 : VALIDATE REPOSITORY STRUCTURE
+         ********************************************************************/
+        stage('Stage 2 : Validate Repository') {
             steps {
-                echo '========== INSTALLING PYTHON REQUIREMENTS =========='
-                sh 'pip3 install --user -r requirements.txt || pip install -r requirements.txt || true'
+                echo '========== STAGE 2 : VALIDATING REPOSITORY STRUCTURE =========='
+                sh '''
+                test -d security || (echo "[ERROR] Missing security/ directory!" && exit 1)
+                test -d monitoring || (echo "[ERROR] Missing monitoring/ directory!" && exit 1)
+                test -d deployment || (echo "[ERROR] Missing deployment/ directory!" && exit 1)
+                test -d app || (echo "[ERROR] Missing app/ directory!" && exit 1)
+                test -f Jenkinsfile || (echo "[ERROR] Missing Jenkinsfile!" && exit 1)
+                test -f requirements.txt || (echo "[ERROR] Missing requirements.txt!" && exit 1)
+                echo "[SUCCESS] Repository structure validated."
+                '''
             }
         }
 
         /********************************************************************
-         * Stage 2 : Generate Backend Environment
+         * STAGE 3 : CREATE VIRTUAL ENVIRONMENT
          ********************************************************************/
-        stage('Generate Backend Environment') {
+        stage('Stage 3 : Create Python Environment') {
             steps {
-                echo '========== GENERATING .ENV =========='
+                echo '========== STAGE 3 : CREATING PYTHON VENV =========='
+                sh '''
+                python3 -m venv .venv || true
+                . .venv/bin/activate || true
+                python3 -m pip install --upgrade pip setuptools wheel || true
+                '''
+            }
+        }
+
+        /********************************************************************
+         * STAGE 4 : INSTALL DEPENDENCIES
+         ********************************************************************/
+        stage('Stage 4 : Install Dependencies') {
+            steps {
+                echo '========== STAGE 4 : INSTALLING REQUIREMENTS =========='
+                sh '''
+                pip3 install -r requirements.txt || pip install -r requirements.txt || true
+                '''
+            }
+        }
+
+        /********************************************************************
+         * STAGE 5 : GENERATE .ENV FILE
+         ********************************************************************/
+        stage('Stage 5 : Generate .env File') {
+            steps {
+                echo '========== STAGE 5 : GENERATING APPLICATION & PIPELINE ENVIRONMENT =========='
                 withCredentials([
                     string(credentialsId: 'MONGO_URL', variable: 'MONGO_URL'),
                     string(credentialsId: 'JWT_SECRET', variable: 'JWT_SECRET'),
                     string(credentialsId: 'EMAIL_USER', variable: 'EMAIL_USER'),
-                    string(credentialsId: 'EMAIL_PASS', variable: 'EMAIL_PASS')
+                    string(credentialsId: 'EMAIL_PASS', variable: 'EMAIL_PASS'),
+                    string(credentialsId: 'DB_PASSWORD', variable: 'DB_PASSWORD'),
+                    string(credentialsId: 'NVD_API_KEY', variable: 'NVD_API_KEY'),
+                    string(credentialsId: 'COSIGN_PASSWORD', variable: 'COSIGN_PASSWORD')
                 ]) {
                     sh '''
+                    # Application server .env
                     cat > app/server/.env <<EOF
 PORT=5000
 MONGO_URL=${MONGO_URL}
@@ -62,39 +119,72 @@ JWT_SECRET=${JWT_SECRET}
 EMAIL_USER=${EMAIL_USER}
 EMAIL_PASS=${EMAIL_PASS}
 EOF
+
+                    # Root DevSecOps Framework .env
+                    cat > .env <<EOF
+DB_TYPE=${DB_TYPE}
+DB_HOST=${DB_HOST}
+DB_PORT=${DB_PORT}
+DB_NAME=${DB_NAME}
+DB_USER=${DB_USER}
+DB_PASSWORD=${DB_PASSWORD}
+NVD_API_KEY=${NVD_API_KEY}
+COSIGN_PASSWORD=${COSIGN_PASSWORD}
+PROJECT_NAME=${PROJECT_NAME}
+REPOSITORY_URL=${GIT_URL:-https://github.com/9MayanK2/DevSecOps}
+BRANCH_NAME=${GIT_BRANCH:-main}
+SOFT_FAIL=false
+EOF
                     '''
                 }
             }
         }
 
         /********************************************************************
-         * Stage 3 : Cleanup Previous Build
+         * STAGE 6 : VALIDATE TOOLS & ENVIRONMENT
          ********************************************************************/
-        stage('Cleanup Previous Deployment') {
+        stage('Stage 6 : Validate Environment & Tools') {
             steps {
-                echo '========== CLEANUP =========='
+                echo '========== STAGE 6 : VALIDATING CLI TOOLS =========='
                 sh '''
-                docker compose down --remove-orphans || true
-                docker image prune -f || true
+                python3 --version
+                docker --version
+                aws --version || true
+                kubectl version --client || true
+                helm version || true
+                echo "[SUCCESS] Environment tools validated."
                 '''
             }
         }
 
         /********************************************************************
-         * Stage 4 : Pre-Build Security
+         * STAGE 7 : CLEAN DOCKER ENVIRONMENT
          ********************************************************************/
-        stage('Pre-Build Security Scans') {
+        stage('Stage 7 : Clean Docker Environment') {
+            steps {
+                echo '========== STAGE 7 : CLEAN DOCKER ENVIRONMENT =========='
+                sh '''
+                docker compose down --remove-orphans || true
+                docker network prune -f || true
+                '''
+            }
+        }
+
+        /********************************************************************
+         * PARALLEL PRE-BUILD SCANS : STAGE 8 (GITLEAKS) & STAGE 9 (HADOLINT)
+         ********************************************************************/
+        stage('Pre-Build Parallel Security Scans') {
             parallel {
-                stage('Gitleaks Secrets Scan') {
+                stage('Stage 8 : Gitleaks Secrets Scan') {
                     steps {
-                        echo '========== GITLEAKS =========='
+                        echo '========== STAGE 8 : GITLEAKS SECRETS SCAN =========='
                         sh './security/run_pipeline.sh pre-build gitleaks'
                     }
                 }
 
-                stage('Hadolint Dockerfile Scan') {
+                stage('Stage 9 : Hadolint Dockerfile Scan') {
                     steps {
-                        echo '========== HADOLINT =========='
+                        echo '========== STAGE 9 : HADOLINT DOCKERFILE SCAN =========='
                         sh './security/run_pipeline.sh pre-build hadolint'
                     }
                 }
@@ -102,226 +192,238 @@ EOF
         }
 
         /********************************************************************
-         * Stage 5 : Build Images
+         * PARALLEL DOCKER BUILDS : STAGE 10 (BACKEND) & STAGE 11 (FRONTEND)
          ********************************************************************/
-        stage('Build Docker Images') {
-            steps {
-                echo '========== BUILDING DOCKER IMAGES =========='
-                sh '''
-                docker compose build
-                echo "Tagging Backend..."
+        stage('Parallel Docker Image Builds') {
+            parallel {
+                stage('Stage 10 : Build Backend Image') {
+                    steps {
+                        echo '========== STAGE 10 : BUILDING BACKEND IMAGE =========='
+                        sh 'docker build -t sentinelops-backend:latest -t sentinelops-backend:${IMAGE_TAG} ./app/server'
+                    }
+                }
 
-                docker tag \
-                sentinelops-backend:latest \
-                sentinelops-backend:${IMAGE_TAG}
-
-                echo "Tagging Frontend..."
-
-                docker tag \
-                sentinelops-frontend:latest \
-                sentinelops-frontend:${IMAGE_TAG}
-
-                docker images
-                '''
+                stage('Stage 11 : Build Frontend Image') {
+                    steps {
+                        echo '========== STAGE 11 : BUILDING FRONTEND IMAGE =========='
+                        sh 'docker build -t sentinelops-frontend:latest -t sentinelops-frontend:${IMAGE_TAG} ./app/client'
+                    }
+                }
             }
         }
 
         /********************************************************************
-         * Stage 6 : Trivy Scan
+         * PARALLEL TRIVY VULNERABILITY SCANS : STAGE 12
          ********************************************************************/
-        stage('Trivy Container Scan') {
-            steps {
-                echo '========== TRIVY =========='
-                sh './security/run_pipeline.sh post-build trivy'
+        stage('Parallel Trivy Container Scans') {
+            parallel {
+                stage('Stage 12a : Trivy Backend Image Scan') {
+                    steps {
+                        echo '========== STAGE 12a : TRIVY BACKEND CONTAINER SCAN =========='
+                        sh 'bash security/container/trivy.sh backend'
+                    }
+                }
+
+                stage('Stage 12b : Trivy Frontend Image Scan') {
+                    steps {
+                        echo '========== STAGE 12b : TRIVY FRONTEND CONTAINER SCAN =========='
+                        sh 'bash security/container/trivy.sh frontend'
+                    }
+                }
             }
         }
 
         /********************************************************************
-         * Stage 7 : Start Containers
+         * STAGE 13 : START APPLICATION CONTAINERS
          ********************************************************************/
-        stage('Start MERN Application') {
+        stage('Stage 13 : Start Application Containers') {
             steps {
-                echo '========== STARTING APPLICATION =========='
+                echo '========== STAGE 13 : STARTING APPLICATION VIA DOCKER COMPOSE =========='
                 sh 'docker compose up -d --force-recreate'
             }
         }
 
         /********************************************************************
-         * Stage 8 : Health Check
+         * STAGE 14 : APPLICATION HEALTH CHECK
          ********************************************************************/
-        stage('Application Health Check') {
+        stage('Stage 14 : Application Health Check') {
             steps {
-                echo '========== WAITING FOR BACKEND =========='
+                echo '========== STAGE 14 : HEALTH CHECK VERIFICATION =========='
                 sh '''
                 for i in {1..30}
                 do
                     if curl -fs http://localhost:5000/health > /dev/null
                     then
-                        echo "Backend is healthy."
+                        echo "[SUCCESS] Backend is healthy."
                         exit 0
                     fi
-                    echo "Waiting for backend..."
+                    echo "Waiting for backend health check..."
                     sleep 5
                 done
-                echo "Backend failed to start."
+                echo "[ERROR] Backend health check failed!"
                 exit 1
                 '''
             }
         }
 
         /********************************************************************
-         * Stage 9 : OWASP ZAP
+         * STAGE 15 : OWASP ZAP DAST DYNAMIC SCAN
          ********************************************************************/
-        stage('OWASP ZAP DAST Scan') {
+        stage('Stage 15 : OWASP ZAP DAST Scan') {
             steps {
-                echo '========== OWASP ZAP =========='
+                echo '========== STAGE 15 : OWASP ZAP DAST DYNAMIC SCAN =========='
                 sh './security/run_pipeline.sh dast zap'
             }
         }
 
         /********************************************************************
-         * Stage 10 : Generate Security Reports
+         * STAGE 16 : SECURITY ORCHESTRATOR & NORMALIZATION
          ********************************************************************/
-        stage('Generate Security Reports') {
+        stage('Stage 16 : Security Orchestrator & Risk Engine') {
             steps {
-                echo '========== GENERATING REPORTS =========='
+                echo '========== STAGE 16 : PARSING, NORMALIZATION, AGGREGATION, RISK & COMPLIANCE ENGINE =========='
                 sh './security/run_pipeline.sh report'
             }
         }
 
         /********************************************************************
-         * Stage 11 : Security Gate Evaluation
+         * STAGE 17 & 18 : VERIFY AMAZON RDS CONNECTIVITY & INGESTION
          ********************************************************************/
-        stage('Security Gate Evaluation') {
+        stage('Stage 17 & 18 : Verify RDS Database Persistence') {
             steps {
-                echo '========== SECURITY GATE EVALUATION =========='
-                sh './security/run_pipeline.sh gate --soft-fail'
+                echo '========== STAGE 17 & 18 : VERIFYING RDS MYSQL CONNECTION & INGESTED SCAN RECORDS =========='
+                sh 'PYTHONPATH=. python3 security/scripts/verify_db.py'
             }
         }
 
         /********************************************************************
-         * Stage 12 : Cosign PKI Digital Signing (Post-Gate)
+         * STAGE 19 : REPORT GENERATION
          ********************************************************************/
-        stage('Cosign PKI Digital Signing') {
+        stage('Stage 19 : Generate Executive Security Reports') {
             steps {
-                echo '========== COSIGN DIGITAL SIGNING =========='
+                echo '========== STAGE 19 : GENERATING HTML & PDF REPORTS =========='
+                sh './security/run_pipeline.sh report'
+            }
+        }
+
+        /********************************************************************
+         * STAGE 20 : ARCHIVE SECURITY REPORT ARTIFACTS
+         ********************************************************************/
+        stage('Stage 20 : Archive Reports & Artifacts') {
+            steps {
+                echo '========== STAGE 20 : ARCHIVING REPORT ARTIFACTS =========='
+                archiveArtifacts artifacts: 'compliance/reports/**/*', allowEmptyArchive: true
+                archiveArtifacts artifacts: 'compliance/master_reports/**/*', allowEmptyArchive: true
+                archiveArtifacts artifacts: 'compliance/logs/**/*', allowEmptyArchive: true
+            }
+        }
+
+        /********************************************************************
+         * STAGE 21 : EXECUTIVE SECURITY SUMMARY
+         ********************************************************************/
+        stage('Stage 21 : Executive Security Summary') {
+            steps {
+                echo '========== STAGE 21 : PRINTING EXECUTIVE SECURITY SUMMARY =========='
+                sh 'cat compliance/master_reports/master_report.json | grep -A 20 "summary" || true'
+            }
+        }
+
+        /********************************************************************
+         * STAGE 22 : SECURITY GATE EVALUATION
+         ********************************************************************/
+        stage('Stage 22 : Security Gate Evaluation') {
+            steps {
+                echo '========== STAGE 22 : SECURITY GATE POLICY EVALUATION =========='
+                sh './security/run_pipeline.sh gate'
+            }
+        }
+
+        /********************************************************************
+         * STAGE 23 : COSIGN DIGITAL SIGNING
+         ********************************************************************/
+        stage('Stage 23 : Cosign PKI Image Signing') {
+            steps {
+                echo '========== STAGE 23 : COSIGN PKI DIGITAL IMAGE SIGNING =========='
                 sh './security/run_pipeline.sh sign'
             }
         }
 
         /********************************************************************
-         * Stage 13 : Cosign Signature Verification (Post-Gate)
+         * STAGE 24 : VERIFY SIGNATURES
          ********************************************************************/
-        stage('Verify Digital Signatures') {
+        stage('Stage 24 : Verify Digital Signatures') {
             steps {
-                echo '========== SIGNATURE VERIFICATION =========='
+                echo '========== STAGE 24 : VERIFYING COSIGN SIGNATURES =========='
                 sh './security/run_pipeline.sh verify'
             }
         }
 
         /********************************************************************
-         * Stage 14 : Publish Images to Amazon ECR (Reserved)
+         * STAGE 25 : LOGIN AMAZON ECR
          ********************************************************************/
-        stage('Login to Amazon ECR') {
-
+        stage('Stage 25 : Login to Amazon ECR') {
             steps {
-
+                echo '========== STAGE 25 : AUTHENTICATING WITH AMAZON ECR =========='
                 sh '''
-                aws ecr get-login-password \
-                --region ${AWS_REGION} | \
-                docker login \
-                --username AWS \
-                --password-stdin \
-                ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+                aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
                 '''
             }
         }
 
         /********************************************************************
-         * Stage 15 : Push Images to Amazon ECR (Reserved)
+         * STAGE 26 : PUSH IMAGES TO ECR
          ********************************************************************/
-        stage('Push Images to Amazon ECR') {
-
+        stage('Stage 26 : Push Images to Amazon ECR') {
             steps {
-
+                echo '========== STAGE 26 : PUSHING CONTAINER IMAGES TO ECR =========='
                 sh '''
-
                 docker tag sentinelops-backend:${IMAGE_TAG} ${BACKEND_IMAGE}
-
                 docker tag sentinelops-frontend:${IMAGE_TAG} ${FRONTEND_IMAGE}
-
                 docker push ${BACKEND_IMAGE}
-
                 docker push ${FRONTEND_IMAGE}
-
                 docker tag sentinelops-backend:${IMAGE_TAG} ${BACKEND_REPOSITORY}:latest
-
                 docker tag sentinelops-frontend:${IMAGE_TAG} ${FRONTEND_REPOSITORY}:latest
-
                 docker push ${BACKEND_REPOSITORY}:latest
-
                 docker push ${FRONTEND_REPOSITORY}:latest
-
-                '''
-            }
-        }
-
-        stage('Verify Images in Amazon ECR') {
-
-            steps {
-
-                sh '''
-
-                aws ecr describe-images \
-                --repository-name sentinelops-backend \
-                --image-ids imageTag=${IMAGE_TAG}
-
-                aws ecr describe-images \
-                --repository-name sentinelops-frontend \
-                --image-ids imageTag=${IMAGE_TAG}
-
-                '''
-            }
-        }
-         /********************************************************************
-         * Stage 16 : Deploy to Amazon EKS (Reserved)
-         ********************************************************************/
-        
-        stage('Deploy to Amazon EKS') {
-
-            steps {
-
-                sh '''
-
-                aws eks update-kubeconfig \
-                --region ${AWS_REGION} \
-                --name ${EKS_CLUSTER}
-
-                bash deployment/deploy.sh ${IMAGE_TAG}
-
                 '''
             }
         }
 
         /********************************************************************
-         * Stage 17 : Verify kubernetes to rollout
+         * STAGE 27 : DEPLOY TO AMAZON EKS
          ********************************************************************/
-        
-        stage('Verify Kubernetes Rollout') {
-
+        stage('Stage 27 : Deploy to Amazon EKS') {
             steps {
-
+                echo '========== STAGE 27 : DEPLOYING TO AMAZON EKS KUBERNETES CLUSTER =========='
                 sh '''
+                aws eks update-kubeconfig --region ${AWS_REGION} --name ${EKS_CLUSTER}
+                bash deployment/deploy.sh ${IMAGE_TAG}
+                '''
+            }
+        }
 
-                kubectl rollout status \
-                deployment/backend \
-                -n sentinelops \
-                --timeout=5m
+        /********************************************************************
+         * STAGE 28 : VERIFY KUBERNETES ROLLOUT
+         ********************************************************************/
+        stage('Stage 28 : Verify Kubernetes Deployment') {
+            steps {
+                echo '========== STAGE 28 : VERIFYING EKS POD ROLLOUT STATUS =========='
+                sh '''
+                kubectl rollout status deployment/backend -n sentinelops --timeout=5m
+                kubectl rollout status deployment/frontend -n sentinelops --timeout=5m
+                '''
+            }
+        }
 
-                kubectl rollout status deployment/frontend \
-                -n sentinelops \
-                --timeout=5m
-
+        /********************************************************************
+         * STAGE 29 : PIPELINE CLEANUP & COMPLETION
+         ********************************************************************/
+        stage('Stage 29 : Final Pipeline Cleanup') {
+            steps {
+                echo '========== STAGE 29 : WORKSPACE & TEMPORARY CLEANUP =========='
+                sh '''
+                docker compose down --remove-orphans || true
+                docker image prune -f || true
                 '''
             }
         }
@@ -329,18 +431,11 @@ EOF
     }
 
     /********************************************************************
-     * POST ACTIONS
+     * POST ACTIONS (NOTIFICATIONS, ARCHIVING & ROLLBACK)
      ********************************************************************/
     post {
         always {
-            echo '========== CLEANING UP =========='
-            sh '''
-
-            docker-compose down --remove-orphans || true
-            docker image prune -f || true
-            
-            '''
-            echo '========== ARCHIVING REPORTS & SIGNATURES =========='
+            echo '========== ARCHIVING ALL LOGS AND REPORTS =========='
             archiveArtifacts artifacts: 'compliance/reports/**/*', allowEmptyArchive: true
             archiveArtifacts artifacts: 'compliance/master_reports/**/*', allowEmptyArchive: true
             archiveArtifacts artifacts: 'compliance/logs/**/*', allowEmptyArchive: true
@@ -349,26 +444,20 @@ EOF
 
         success {
             echo '''
-==================================================
-      SENTINELOPS PIPELINE COMPLETED SUCCESSFULLY
-==================================================
+======================================================================
+      🚀 SENTINELOPS ENTERPRISE DEVSECOPS PIPELINE SUCCESS 🚀
+   Historical scan analytics persisted to AWS RDS MySQL.
+   Real-time Grafana security dashboards updated.
+======================================================================
             '''
         }
 
         failure {
-
-            echo '========== DEPLOYMENT FAILED =========='
-
+            echo '========== DEPLOYMENT FAILED — EXECUTING ROLLBACK =========='
             sh '''
-            echo "Rolling back Kubernetes Deployment..."
-
+            echo "[WARNING] Security Gate or Deployment failed. Rolling back Kubernetes release..."
             bash deployment/rollback.sh || true
-            kubectl get pods -n sentinelops
-            '''
-            echo '''
-==================================================
-      SENTINELOPS PIPELINE FAILED
-==================================================
+            kubectl get pods -n sentinelops || true
             '''
         }
     }

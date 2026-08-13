@@ -1,0 +1,226 @@
+[
+  {
+    "id": "KB-SQLI-001",
+    "cve": "CVE-2022-21824",
+    "cwe": "CWE-89",
+    "rule_id": "B608",
+    "tool": "Bandit",
+    "title": "SQL Injection via Unsanitized String Formatting",
+    "severity": "HIGH",
+    "category": "Injection",
+    "framework_mappings": {
+      "owasp": "A03:2021-Injection",
+      "nist": "PR.DS-5",
+      "cis": "Control 16.2",
+      "iso27001": "A.14.2.5"
+    },
+    "description": "An unsafe SQL statement is constructed dynamically using direct string concatenation or formatting with user-controlled input, allowing malicious attackers to alter query logic, bypass authentication, or exfiltrate database content.",
+    "remediation_steps": [
+      "Replace string formatting/concatenation with parameterized queries or prepared statements.",
+      "Use an Object-Relational Mapper (ORM) like SQLAlchemy or Django ORM.",
+      "Implement input validation and strictly type-check parameters before passing to database handlers."
+    ],
+    "vulnerable_code_example": "cursor.execute(f\"SELECT * FROM users WHERE username = '{username}' AND password = '{password}'\")",
+    "remediated_code_example": "cursor.execute(\"SELECT * FROM users WHERE username = %s AND password = %s\", (username, password))",
+    "prevention_best_practices": [
+      "Never build raw SQL strings from external input.",
+      "Enforce least-privilege database user access credentials.",
+      "Enable database query logging and anomaly detection."
+    ]
+  },
+  {
+    "id": "KB-SECRET-001",
+    "cve": "N/A",
+    "cwe": "CWE-798",
+    "rule_id": "gitleaks-generic-api-key",
+    "tool": "Gitleaks",
+    "title": "Hardcoded API Key / Secret in Source Code",
+    "severity": "CRITICAL",
+    "category": "Secrets Management",
+    "framework_mappings": {
+      "owasp": "A07:2021-Identification and Authentication Failures",
+      "nist": "PR.AC-1",
+      "cis": "Control 6.4",
+      "iso27001": "A.9.4.3"
+    },
+    "description": "Sensitive credentials such as API keys, passwords, private keys, or tokens are committed directly into source code repositories, exposing credentials to unauthorized parties.",
+    "remediation_steps": [
+      "Immediately revoke, invalidate, and rotate the compromised credential.",
+      "Store secrets in environment variables or external secret management systems (e.g. AWS Secrets Manager, HashiCorp Vault).",
+      "Remove secret from git commit history using git-filter-repo or BFG Repo-Cleaner."
+    ],
+    "vulnerable_code_example": "API_KEY = 'sk_live_992138a7b6c5d4e3f2a1b0c9d8e7f6a5'",
+    "remediated_code_example": "import os\nAPI_KEY = os.getenv('API_KEY')",
+    "prevention_best_practices": [
+      "Configure pre-commit hooks with Gitleaks or Trufflehog.",
+      "Maintain a .gitignore file excluding .env and credential store files.",
+      "Use ephemeral, short-lived tokens whenever possible."
+    ]
+  },
+  {
+    "id": "KB-CMD-001",
+    "cve": "CVE-2023-38831",
+    "cwe": "CWE-78",
+    "rule_id": "B602",
+    "tool": "Bandit",
+    "title": "Command Injection via Unsanitized Subprocess Execution",
+    "severity": "HIGH",
+    "category": "Injection",
+    "framework_mappings": {
+      "owasp": "A03:2021-Injection",
+      "nist": "PR.DS-5",
+      "cis": "Control 16.3",
+      "iso27001": "A.14.2.1"
+    },
+    "description": "Executing system shell commands with shell=True or passing untrusted strings directly to subprocess calls permits attackers to execute arbitrary system binaries.",
+    "remediation_steps": [
+      "Avoid using shell=True in subprocess module calls.",
+      "Pass arguments as a list of strings rather than a concatenated single string shell line.",
+      "Use shlex.quote() if system shell evaluation is strictly mandatory."
+    ],
+    "vulnerable_code_example": "import subprocess\nsubprocess.run(f\"ping -c 1 {user_host}\", shell=True)",
+    "remediated_code_example": "import subprocess\nsubprocess.run([\"ping\", \"-c\", \"1\", user_host], check=True, shell=False)",
+    "prevention_best_practices": [
+      "Avoid invoking OS shell commands whenever native library APIs exist.",
+      "Restrict binary execution capabilities via AppArmor / SELinux / Seccomp profiles."
+    ]
+  },
+  {
+    "id": "KB-XSS-001",
+    "cve": "CVE-2021-42574",
+    "cwe": "CWE-79",
+    "rule_id": "CWE-79",
+    "tool": "OWASP ZAP",
+    "title": "Reflected Cross-Site Scripting (XSS)",
+    "severity": "MEDIUM",
+    "category": "Web Application Security",
+    "framework_mappings": {
+      "owasp": "A03:2021-Injection",
+      "nist": "PR.IP-1",
+      "cis": "Control 16.4",
+      "iso27001": "A.14.2.5"
+    },
+    "description": "Unescaped user input rendered directly in web pages allows malicious scripts to execute in the victim browser session, compromising cookies, session tokens, or site data.",
+    "remediation_steps": [
+      "Apply contextual output encoding (HTML, JavaScript, URL encoding) on all user-supplied data.",
+      "Set Content-Security-Policy (CSP) headers restricting inline script execution.",
+      "Mark HTTP cookies with HttpOnly, Secure, and SameSite attributes."
+    ],
+    "vulnerable_code_example": "return f\"<h1>Welcome {request.args.get('name')}</h1>\"",
+    "remediated_code_example": "from markupsafe import escape\nreturn f\"<h1>Welcome {escape(request.args.get('name', ''))}</h1>\"",
+    "prevention_best_practices": [
+      "Use auto-escaping web templating engines such as Jinja2 or React.",
+      "Enforce strict Content Security Policy headers across web endpoints."
+    ]
+  },
+  {
+    "id": "KB-DESER-001",
+    "cve": "CVE-2020-14343",
+    "cwe": "CWE-502",
+    "rule_id": "B301",
+    "tool": "Bandit",
+    "title": "Insecure Deserialization via Pickle or Unsafe Loader",
+    "severity": "CRITICAL",
+    "category": "Deserialization Vulnerability",
+    "framework_mappings": {
+      "owasp": "A08:2021-Software and Data Integrity Failures",
+      "nist": "PR.DS-1",
+      "cis": "Control 16.5",
+      "iso27001": "A.14.1.2"
+    },
+    "description": "Deserializing untrusted data with pickle or yaml.unsafe_load allows execution of arbitrary Python objects and shell payloads.",
+    "remediation_steps": [
+      "Avoid Python pickle deserialization for untrusted network payloads.",
+      "Use standard JSON, Protocol Buffers, or safe YAML parsers (yaml.safe_load).",
+      "Sign and encrypt serialized data payloads using HMAC signatures if pickle is mandatory."
+    ],
+    "vulnerable_code_example": "import pickle\ndata = pickle.loads(user_raw_bytes)",
+    "remediated_code_example": "import json\ndata = json.loads(user_raw_bytes.decode('utf-8'))",
+    "prevention_best_practices": [
+      "Never accept binary serialized objects directly from external consumers.",
+      "Validate schema structure post-parsing."
+    ]
+  },
+  {
+    "id": "KB-K8S-001",
+    "cve": "N/A",
+    "cwe": "CWE-250",
+    "rule_id": "DS002",
+    "tool": "Trivy",
+    "title": "Root Container Execution in Kubernetes Manifest / Dockerfile",
+    "severity": "HIGH",
+    "category": "Container Security",
+    "framework_mappings": {
+      "owasp": "A05:2021-Security Misconfiguration",
+      "nist": "PR.IP-2",
+      "cis": "Control 5.2",
+      "iso27001": "A.12.6.1"
+    },
+    "description": "Containers running as the root user (UID 0) increase container escape blast radius, exposing the underlying host system to compromise.",
+    "remediation_steps": [
+      "Add a non-root USER directive in Dockerfile.",
+      "Specify securityContext.runAsNonRoot: true in Kubernetes Deployment / Pod specs.",
+      "Set readOnlyRootFilesystem: true in securityContext."
+    ],
+    "vulnerable_code_example": "# Dockerfile\nFROM python:3.11-slim\nCMD [\"python\", \"app.py\"]",
+    "remediated_code_example": "# Dockerfile\nFROM python:3.11-slim\nRUN useradd -m appuser\nUSER appuser\nCMD [\"python\", \"app.py\"]",
+    "prevention_best_practices": [
+      "Enforce Kubernetes Pod Security Standards (Restricted policy).",
+      "Scan images in CI pipeline using Trivy or Hadolint."
+    ]
+  },
+  {
+    "id": "KB-CRYPTO-001",
+    "cve": "N/A",
+    "cwe": "CWE-327",
+    "rule_id": "B303",
+    "tool": "Bandit",
+    "title": "Use of Broken / Weak Cryptographic Hash Algorithm (MD5 / SHA1)",
+    "severity": "MEDIUM",
+    "category": "Cryptography",
+    "framework_mappings": {
+      "owasp": "A02:2021-Cryptographic Failures",
+      "nist": "PR.DS-2",
+      "cis": "Control 3.10",
+      "iso27001": "A.10.1.1"
+    },
+    "description": "MD5 and SHA-1 hashing algorithms are vulnerable to collision attacks and must not be used for secure hashing, signatures, or password verification.",
+    "remediation_steps": [
+      "Upgrade cryptographic hashing algorithms to SHA-256 or SHA-512.",
+      "Use argon2, bcrypt, or pbkdf2_hmac for password hashing rather than raw cryptographic hashes."
+    ],
+    "vulnerable_code_example": "import hashlib\ntoken_hash = hashlib.md5(user_token.encode()).hexdigest()",
+    "remediated_code_example": "import hashlib\ntoken_hash = hashlib.sha256(user_token.encode()).hexdigest()",
+    "prevention_best_practices": [
+      "Enforce TLS 1.3 and modern cipher suites.",
+      "Conduct regular cryptographic algorithm reviews."
+    ]
+  },
+  {
+    "id": "KB-DEP-001",
+    "cve": "CVE-2023-44487",
+    "cwe": "CWE-400",
+    "rule_id": "CVE-2023-44487",
+    "tool": "Trivy",
+    "title": "HTTP/2 Rapid Reset Denial of Service Vulnerability",
+    "severity": "HIGH",
+    "category": "Vulnerable Dependency",
+    "framework_mappings": {
+      "owasp": "A06:2021-Vulnerable and Outdated Components",
+      "nist": "SI-2",
+      "cis": "Control 2.2",
+      "iso27001": "A.12.6.1"
+    },
+    "description": "Vulnerability in HTTP/2 protocol stream handling allows remote unauthenticated attackers to trigger CPU denial of service via rapid reset requests.",
+    "remediation_steps": [
+      "Upgrade web server/proxy packages (Nginx, Envoy, gRPC, Node.js) to patched versions.",
+      "Limit concurrent HTTP/2 streams per connection."
+    ],
+    "vulnerable_code_example": "requirements.txt: urllib3==1.26.5",
+    "remediated_code_example": "requirements.txt: urllib3>=1.26.18",
+    "prevention_best_practices": [
+      "Automate dependency vulnerability scanning in CI/CD pipeline.",
+      "Apply Dependabot or Renovate bot automated patch management."
+    ]
+  }
+]
